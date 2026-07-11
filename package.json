@@ -1,7 +1,9 @@
 {
   "name": "anon_ai_web",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Anon AI Application",
+  "author": "GAMER87",
   "main": "main.cjs",
   "type": "module",
   "scripts": {
