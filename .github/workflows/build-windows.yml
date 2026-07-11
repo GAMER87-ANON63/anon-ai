@@ -12,7 +12,7 @@ jobs:
           node-version: 22
       - run: npm install
       - run: npm run build
-      - run: npx --yes electron-builder --win
+      - run: npx --yes electron-builder --win --publish never
       - uses: actions/upload-artifact@v4
         with:
           name: anon-ai-windows-exe

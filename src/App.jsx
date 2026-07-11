@@ -2,11 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, Plus, Send, User } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai'; 
 
-// For local desktop app, we pull from environment.
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY';
-const ai = new GoogleGenAI({ apiKey });
-
 function App() {
+  const [apiKey, setApiKey] = useState(localStorage.getItem('anon_ai_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '');
   const [sessions, setSessions] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [input, setInput] = useState('');
@@ -81,6 +78,8 @@ function App() {
         parts: [{ text: m.content }]
       }));
 
+      if (!apiKey) throw new Error("Please click your profile name to set your Gemini API Key!");
+      const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
         model: 'gemini-3.5-flash',
         contents: history,
@@ -144,7 +143,12 @@ function App() {
             setUserName(newName.trim());
             localStorage.setItem('anon_ai_name', newName.trim());
           }
-        }} title="Click to change your name" style={{ cursor: 'pointer' }}>
+          const newKey = prompt("Enter your Gemini API Key (leave blank to keep current):", apiKey ? "********" : "");
+          if (newKey && newKey !== "********" && newKey.trim().length > 0) {
+            setApiKey(newKey.trim());
+            localStorage.setItem('anon_ai_api_key', newKey.trim());
+          }
+        }} title="Click to change your name & API key" style={{ cursor: 'pointer' }}>
           <div className="avatar">{userName.charAt(0).toUpperCase()}</div>
           <div style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{userName}</div>
         </div>
